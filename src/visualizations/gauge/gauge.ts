@@ -4,21 +4,21 @@ declare var looker: Looker;
 import * as d3 from "d3";
 import { Looker, VisualizationDefinition } from "../../common/types";
 import { handleErrors } from "../../common/utils";
-import * as LiquidFillGauge from "./gauge.js";
+import * as Gauge from "./gauge.js";
 
 // @ts-ignore
-LiquidFillGauge.initialize(d3);
+Gauge.initialize(d3);
 
-interface LiquidFillGaugeVisualization extends VisualizationDefinition {
+interface GaugeVisualization extends VisualizationDefinition {
   svg?: any;
 }
 
 // @ts-ignore
-const defaults: any = LiquidFillGauge.defaultConfig;
+const defaults: any = Gauge.defaultConfig;
 
-const vis: LiquidFillGaugeVisualization = {
-  id: "liquid_fill_gauge", // id/label not required, but nice for testing and keeping manifests in sync
-  label: "Liquid Fill Gauge",
+const vis: GaugeVisualization = {
+  id: "gauge", // id/label not required, but nice for testing and keeping manifests in sync
+  label: "Gauge",
   options: {
     showComparison: {
       label: "Use field comparison",
@@ -220,7 +220,7 @@ const vis: LiquidFillGaugeVisualization = {
       return;
 
     // @ts-ignore
-    const gaugeConfig = Object.assign(LiquidFillGauge.defaultConfig, config);
+    const gaugeConfig = Object.assign(Gauge.defaultConfig, config);
 
     if (this.addError && this.clearErrors) {
       if (gaugeConfig.maxValue <= 0) {
@@ -267,7 +267,7 @@ const vis: LiquidFillGaugeVisualization = {
       });
     }
     // @ts-ignore
-    d3.liquidfillgauge(this.svg, value, gaugeConfig);
+    d3.gauge(this.svg, value, gaugeConfig);
   },
 };
 
