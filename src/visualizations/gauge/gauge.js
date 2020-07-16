@@ -413,6 +413,8 @@ function initialize(d3) {
       });
     });
   };
+
+  return d3;
 }
 
 module.exports = { initialize, defaultConfig };

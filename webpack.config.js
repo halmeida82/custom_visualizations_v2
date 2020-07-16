@@ -26,7 +26,7 @@ var webpackConfig = {
     ],
   },
   stats: {
-    warningsFilter: /export.*liquidfillgauge.*was not found/,
+    warningsFilter: /export.*gauge.*was not found/,
   },
   performance: {
     hints: false,
