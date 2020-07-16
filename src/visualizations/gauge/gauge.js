@@ -47,6 +47,8 @@ function initialize(d3) {
     };
   })();
 
+  debugger;
+
   d3.gauge = function (g, value, settings) {
     // Handle configuration
     var config = d3.map(defaultConfig);

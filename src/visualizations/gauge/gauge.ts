@@ -230,7 +230,9 @@ const vis: GaugeVisualization = {
         });
         return;
       } else if (data.length === 0) {
-        this.addError({ title: "No results." });
+        this.addError({
+          title: "No results.",
+        });
         return;
       } else {
         this.clearErrors("config");
@@ -266,8 +268,12 @@ const vis: GaugeVisualization = {
         waveRise: false,
       });
     }
+
     // @ts-ignore
-    d3.gauge(this.svg, value, gaugeConfig);
+    debugger;
+
+    // @ts-ignore
+    (d3 as any).gauge(this.svg, value, gaugeConfig);
   },
 };
 
