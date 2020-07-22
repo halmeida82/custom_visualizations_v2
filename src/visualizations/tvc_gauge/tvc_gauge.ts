@@ -58,11 +58,7 @@ function value2chart(value: number, perimeter: number) {
 
 function buildChart(element: any, data: any, queryResponse: any, vis: any) {
 
-  if (vis.chart) {
-    return;
-  }
-
-	// Grab the first cell of the data.
+  // Grab the first cell of the data.
   const firstRow = data[0];
   const nominator = firstRow[queryResponse.fields.measures[0].name].value;
   const denominator = firstRow[queryResponse.fields.measures[1].name].value;

@@ -6697,9 +6697,6 @@ function value2chart(value, perimeter) {
     return (value * perimeter) / 100 - perimeter / 2;
 }
 function buildChart(element, data, queryResponse, vis) {
-    if (vis.chart) {
-        return;
-    }
     // Grab the first cell of the data.
     var firstRow = data[0];
     var nominator = firstRow[queryResponse.fields.measures[0].name].value;
