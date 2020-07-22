@@ -16,6 +16,7 @@ interface GaugeVisualization extends VisualizationDefinition {
   chartElement?: any;
   textElement?: any;
 
+  elementOptions?: any;
   chart?: Selection<BaseType, {}, HTMLElement, any>;
   gaugeArc?: Arc<any, DefaultArcObject>;
   clipPath?: any;
@@ -65,7 +66,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
   const nominator = firstRow[queryResponse.fields.measures[0].name].value;
   const denominator = firstRow[queryResponse.fields.measures[1].name].value;
 
-  const opts = vis.options = getChartOptions(element, vis);
+  const opts = vis.elementOptions = getChartOptions(element, vis);
 
   console.log(opts);
   const colorDarker = rgb(opts.baseColor).darker(0.5);
@@ -152,7 +153,7 @@ function updateValue(value: number, animate: boolean, vis: any) {
     .ease(easeExpOut)
     .duration(animate ? 750 : 0)
     .attrTween('d', (d: any) => {
-      const newAngle = value2chart(value, vis.options.perimeter);
+      const newAngle = value2chart(value, vis.elementOptions.perimeter);
       const interpolatedValue = interpolate(d.endAngle, newAngle);
 
       return (t: any) => {

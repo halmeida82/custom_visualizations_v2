@@ -6704,7 +6704,7 @@ function buildChart(element, data, queryResponse, vis) {
     var firstRow = data[0];
     var nominator = firstRow[queryResponse.fields.measures[0].name].value;
     var denominator = firstRow[queryResponse.fields.measures[1].name].value;
-    var opts = vis.options = getChartOptions(element, vis);
+    var opts = vis.elementOptions = getChartOptions(element, vis);
     console.log(opts);
     var colorDarker = Object(d3_color__WEBPACK_IMPORTED_MODULE_1__[/* rgb */ "f"])(opts.baseColor).darker(0.5);
     var colorBrighter = Object(d3_color__WEBPACK_IMPORTED_MODULE_1__[/* rgb */ "f"])(opts.baseColor).brighter(0.5);
@@ -6777,7 +6777,7 @@ function updateValue(value, animate, vis) {
         .ease(d3_ease__WEBPACK_IMPORTED_MODULE_2__[/* easeExpOut */ "x"])
         .duration(animate ? 750 : 0)
         .attrTween('d', function (d) {
-        var newAngle = value2chart(value, vis.options.perimeter);
+        var newAngle = value2chart(value, vis.elementOptions.perimeter);
         var interpolatedValue = Object(d3_interpolate__WEBPACK_IMPORTED_MODULE_3__[/* interpolate */ "a"])(d.endAngle, newAngle);
         return function (t) {
             d.endAngle = interpolatedValue(t);
