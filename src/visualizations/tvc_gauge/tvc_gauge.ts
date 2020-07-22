@@ -167,19 +167,18 @@ const vis: GaugeVisualization = {
       label: 'transitionDuration',
       min: 0,
       default: defaults.transitionDuration,
-      section: 'Value',
+      section: 'Style',
       type: 'number',
       placeholder: 'Delay in seconds'
     },
     circleThickness: {
       label: 'Circle thickness',
-      min: 0,
+      min: 1,
       max: 20,
       step: 1,
       default: defaults.circleThickness,
       section: 'Style',
-      type: 'number',
-      display: 'range'
+      type: 'number'
     },
     circleGap: {
       label: 'Circle gap',
@@ -188,8 +187,7 @@ const vis: GaugeVisualization = {
       step: 5,
       default: defaults.circleGap,
       section: 'Style',
-      type: 'number',
-      display: 'range'
+      type: 'number'
     },
     baseColor: {
       label: 'Base color',
