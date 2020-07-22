@@ -92,6 +92,8 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
 
   debugger;
 
+  console.log(vis.gaugeArc);
+
   // Generate gray background
   vis.chart
     .append('path')

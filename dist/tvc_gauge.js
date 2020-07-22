@@ -6724,6 +6724,7 @@ function buildChart(element, data, queryResponse, vis) {
         .startAngle(opts.angles.start)
         .cornerRadius((opts.radius.outer - opts.radius.inner) / 2);
     debugger;
+    console.log(vis.gaugeArc);
     // Generate gray background
     vis.chart
         .append('path')
