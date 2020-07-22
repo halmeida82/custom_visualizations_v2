@@ -7,6 +7,7 @@ var webpackConfig = {
   entry: {
     v1_common: "./src/common/common-entry.js",
     gauge: "./src/visualizations/gauge/gauge.ts",
+    tvc_gauge: "./src/visualizations/tvc_gauge/tvc_gauge.ts",
   },
   output: {
     filename: "[name].js",
