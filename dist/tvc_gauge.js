@@ -6493,7 +6493,7 @@ function updateValue(value, animate, vis) {
     vis.clipPath
         .transition()
         .ease(expOut)
-        .duration(animate ? 750 : 0)
+        .duration(animate ? vis.elementOptions.duration : 0)
         .attrTween('d', function (d) {
         var newAngle = value2chart(value, vis.elementOptions.perimeter);
         var interpolatedValue = src_value(d.endAngle, newAngle);

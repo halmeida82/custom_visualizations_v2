@@ -146,7 +146,7 @@ function updateValue(value: number, animate: boolean, vis: any) {
   vis.clipPath
     .transition()
     .ease(easeExpOut)
-    .duration(animate ? 750 : 0)
+    .duration(animate ? vis.elementOptions.duration : 0)
     .attrTween('d', (d: any) => {
       const newAngle = value2chart(value, vis.elementOptions.perimeter);
       const interpolatedValue = interpolate(d.endAngle, newAngle);
