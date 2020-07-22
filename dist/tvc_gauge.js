@@ -6929,6 +6929,7 @@ var vis = {
         }
       */
         this.gaugeConfig = Object.assign(defaults, config);
+        debugger;
         // Clear any errors from previous updates.
         // @ts-ignore
         this.clearErrors();
