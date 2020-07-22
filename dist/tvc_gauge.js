@@ -6796,7 +6796,6 @@ var vis = {
             label: 'Circle thickness',
             min: 1,
             max: 20,
-            step: 1,
             default: defaults.circleThickness,
             section: 'Style',
             type: 'number'
@@ -6805,7 +6804,6 @@ var vis = {
             label: 'Circle gap',
             min: 0,
             max: 180,
-            step: 5,
             default: defaults.circleGap,
             section: 'Style',
             type: 'number'
