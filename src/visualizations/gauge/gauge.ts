@@ -147,7 +147,7 @@ function updateValue(value: number, animate: boolean, vis: any) {
   vis.clipPath
     .transition()
     .ease(easeExpOut)
-    .duration(animate ? 750 : 0)
+    .duration(animate ? vis.elementOptions.duration : 0)
     .attrTween('d', (d: any) => {
       const newAngle = value2chart(value, vis.elementOptions.perimeter);
       const interpolatedValue = interpolate(d.endAngle, newAngle);
@@ -164,6 +164,14 @@ const vis: GaugeVisualization = {
   id: 'gauge', // id/label not required, but nice for testing and keeping manifests in sync
   label: 'Gauge',
   options: {
+    transitionDuration: {
+      label: 'transitionDuration',
+      min: 0,
+      default: defaults.transitionDuration,
+      section: 'Style',
+      type: 'number',
+      placeholder: 'Delay in seconds'
+    },
     circleThickness: {
       label: 'Circle thickness',
       min: 1,
