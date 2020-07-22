@@ -1,13 +1,26 @@
 // Global values provided via the API
 declare var looker: Looker;
 
-import * as d3 from 'd3';
+// import * as d3 from 'd3';
+import { range } from 'd3-array';
+import { rgb } from 'd3-color';
+import { easeExpOut } from 'd3-ease';
+import { interpolate } from 'd3-interpolate';
+import { BaseType, select, Selection } from 'd3-selection';
+import { arc, Arc, DefaultArcObject } from 'd3-shape';
+import 'd3-transition';
 import { Looker, VisualizationDefinition } from '../../common/types';
 
 interface GaugeVisualization extends VisualizationDefinition {
   svg?: any;
   chartElement?: any;
   textElement?: any;
+
+  chart?: Selection<BaseType, {}, HTMLElement, any>;
+  gaugeArc?: Arc<any, DefaultArcObject>;
+  clipPath?: any;
+  gradientId?: string;
+  gradientGroup?: Selection<BaseType, {}, HTMLElement, any>;
 }
 
 // @ts-ignore
@@ -55,9 +68,9 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
   const opts = vis.options = getChartOptions(element, vis);
 
   console.log(opts);
-  const colorDarker = d3.rgb(opts.baseColor).darker(0.5);
-  const colorBrighter = d3.rgb(opts.baseColor).brighter(0.5);
-  const chartContainer = d3.select(element);
+  const colorDarker = rgb(opts.baseColor).darker(0.5);
+  const colorBrighter = rgb(opts.baseColor).brighter(0.5);
+  const chartContainer = select(element);
 
   // Clear HTML content of the chart container's DOM element
   chartContainer.html(null);
@@ -71,7 +84,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .attr('transform', `translate(${opts.width / 2}, ${opts.height / 2})`);
 
   // Generate arc
-  vis.gaugeArc = d3.arc()
+  vis.gaugeArc = arc()
     .innerRadius(opts.radius.inner)
     .outerRadius(opts.radius.outer)
     .startAngle(opts.angles.start)
@@ -85,12 +98,12 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .attr('d', vis.gaugeArc);
 
   // Generate arc for the gradient
-  const gradientArc = d3.arc()
+  const gradientArc = arc()
   .innerRadius(opts.radius.inner)
   .outerRadius(opts.radius.outer);
 
   // Generate data to create the slices for the gradient arc
-  const datum = d3.range(200).map(i => {
+  const datum = range(200).map(i => {
     return {
       startAngle: value2chart(i / 2, opts.perimeter),
       endAngle: value2chart(i / 2 + 1, opts.perimeter),
@@ -117,7 +130,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
       const green = colorDarker.g + (d.percentage / 100) * (colorBrighter.g - colorDarker.g);
       const blue = colorDarker.b + (d.percentage / 100) * (colorBrighter.b - colorDarker.b);
 
-      return d3.rgb(red, green, blue).toString();
+      return rgb(red, green, blue).toString();
     });
 
   // Create clipping path to clip the gradient slices
@@ -136,11 +149,11 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
 function updateValue(value: number, animate: boolean, vis: any) {
   vis.clipPath
     .transition()
-    .ease(d3.easeExpOut)
+    .ease(easeExpOut)
     .duration(animate ? 750 : 0)
     .attrTween('d', (d: any) => {
       const newAngle = value2chart(value, vis.options.perimeter);
-      const interpolatedValue = d3.interpolate(d.endAngle, newAngle);
+      const interpolatedValue = interpolate(d.endAngle, newAngle);
 
       return (t: any) => {
         d.endAngle = interpolatedValue(t);

@@ -91,13 +91,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */,
-/* 1 */,
-/* 2 */
+/******/ ({
+
+/***/ 11:
 /***/ (function(module, exports, __webpack_require__) {
 
 function formatType(valueFormat) {
@@ -193,12 +192,13 @@ function handleErrors(vis, resp, options) {
   return true;
 }
 
-window.d3v4 = __webpack_require__(3);
+window.d3v4 = __webpack_require__(12);
 window.formatType = formatType;
 window.handleErrors = handleErrors;
 
 /***/ }),
-/* 3 */
+
+/***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -12293,5 +12293,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ })
-/******/ ]);
+
+/******/ });
 });
