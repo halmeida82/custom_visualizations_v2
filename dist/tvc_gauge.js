@@ -6512,7 +6512,7 @@ var gauge_vis = {
             label: 'Transition duration (miliseconds)',
             min: 0,
             default: defaults.transitionDuration,
-            section: 'Style',
+            section: 'Config',
             type: 'number',
             placeholder: 'Delay in miliseconds'
         },
@@ -6521,7 +6521,7 @@ var gauge_vis = {
             min: 1,
             max: 20,
             default: defaults.circleThickness,
-            section: 'Style',
+            section: 'Config',
             type: 'number'
         },
         circleGap: {
@@ -6529,7 +6529,7 @@ var gauge_vis = {
             min: 0,
             max: 180,
             default: defaults.circleGap,
-            section: 'Style',
+            section: 'Config',
             type: 'number'
         },
         baseColor: {

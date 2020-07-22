@@ -168,7 +168,7 @@ const vis: GaugeVisualization = {
       label: 'Transition duration (miliseconds)',
       min: 0,
       default: defaults.transitionDuration,
-      section: 'Style',
+      section: 'Config',
       type: 'number',
       placeholder: 'Delay in miliseconds'
     },
@@ -177,7 +177,7 @@ const vis: GaugeVisualization = {
       min: 1,
       max: 20,
       default: defaults.circleThickness,
-      section: 'Style',
+      section: 'Config',
       type: 'number'
     },
     circleGap: {
@@ -185,7 +185,7 @@ const vis: GaugeVisualization = {
       min: 0,
       max: 180,
       default: defaults.circleGap,
-      section: 'Style',
+      section: 'Config',
       type: 'number'
     },
     baseColor: {
