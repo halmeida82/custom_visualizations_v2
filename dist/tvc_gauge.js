@@ -6705,7 +6705,6 @@ function buildChart(element, data, queryResponse, vis) {
     var nominator = firstRow[queryResponse.fields.measures[0].name].value;
     var denominator = firstRow[queryResponse.fields.measures[1].name].value;
     var opts = vis.elementOptions = getChartOptions(element, vis);
-    console.log(opts);
     var colorDarker = Object(d3_color__WEBPACK_IMPORTED_MODULE_1__[/* rgb */ "f"])(opts.baseColor).darker(0.5);
     var colorBrighter = Object(d3_color__WEBPACK_IMPORTED_MODULE_1__[/* rgb */ "f"])(opts.baseColor).brighter(0.5);
     var chartContainer = Object(d3_selection__WEBPACK_IMPORTED_MODULE_4__[/* select */ "k"])(element);
@@ -6724,12 +6723,14 @@ function buildChart(element, data, queryResponse, vis) {
         .outerRadius(opts.radius.outer)
         .startAngle(opts.angles.start)
         .cornerRadius((opts.radius.outer - opts.radius.inner) / 2);
+    debugger;
     // Generate gray background
     vis.chart
         .append('path')
         .datum({ endAngle: opts.angles.end })
         .style('fill', '#ddd')
         .attr('d', vis.gaugeArc);
+    debugger;
     // Generate arc for the gradient
     var gradientArc = Object(d3_shape__WEBPACK_IMPORTED_MODULE_5__[/* arc */ "a"])()
         .innerRadius(opts.radius.inner)
@@ -6755,6 +6756,7 @@ function buildChart(element, data, queryResponse, vis) {
         .attr('class', 'piece')
         .attr('d', gradientArc)
         .style('fill', function (d) {
+        debugger;
         var red = colorDarker.r + (d.percentage / 100) * (colorBrighter.r - colorDarker.r);
         var green = colorDarker.g + (d.percentage / 100) * (colorBrighter.g - colorDarker.g);
         var blue = colorDarker.b + (d.percentage / 100) * (colorBrighter.b - colorDarker.b);

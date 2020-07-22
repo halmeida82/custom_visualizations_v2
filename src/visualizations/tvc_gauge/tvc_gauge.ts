@@ -68,7 +68,6 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
 
   const opts = vis.elementOptions = getChartOptions(element, vis);
 
-  console.log(opts);
   const colorDarker = rgb(opts.baseColor).darker(0.5);
   const colorBrighter = rgb(opts.baseColor).brighter(0.5);
   const chartContainer = select(element);
@@ -91,12 +90,16 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .startAngle(opts.angles.start)
     .cornerRadius((opts.radius.outer - opts.radius.inner) / 2);
 
+  debugger;
+
   // Generate gray background
   vis.chart
     .append('path')
     .datum({ endAngle: opts.angles.end })
     .style('fill', '#ddd')
     .attr('d', vis.gaugeArc);
+
+  debugger;
 
   // Generate arc for the gradient
   const gradientArc = arc()
@@ -127,6 +130,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .attr('class', 'piece')
     .attr('d', gradientArc)
     .style('fill', (d: any) => {
+      debugger;
       const red = colorDarker.r + (d.percentage / 100) * (colorBrighter.r - colorDarker.r);
       const green = colorDarker.g + (d.percentage / 100) * (colorBrighter.g - colorDarker.g);
       const blue = colorDarker.b + (d.percentage / 100) * (colorBrighter.b - colorDarker.b);
