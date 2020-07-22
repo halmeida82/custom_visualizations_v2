@@ -6509,15 +6509,15 @@ var gauge_vis = {
     label: 'Gauge',
     options: {
         transitionDuration: {
-            label: 'transitionDuration',
+            label: 'Transition duration (miliseconds)',
             min: 0,
             default: defaults.transitionDuration,
             section: 'Style',
             type: 'number',
-            placeholder: 'Delay in seconds'
+            placeholder: 'Delay in miliseconds'
         },
         circleThickness: {
-            label: 'Circle thickness',
+            label: 'Circle thickness (1-20)',
             min: 1,
             max: 20,
             default: defaults.circleThickness,
@@ -6525,7 +6525,7 @@ var gauge_vis = {
             type: 'number'
         },
         circleGap: {
-            label: 'Circle gap',
+            label: 'Circle gap in degrees (0-180)',
             min: 0,
             max: 180,
             default: defaults.circleGap,
