@@ -6399,7 +6399,8 @@ var defaults = {
     height: 175,
     transitionDuration: 1000,
     circleThickness: 10,
-    baseColor: '#00b7a8'
+    baseColor: '#00b7a8',
+    textColor: '#000000'
 };
 function gauge_deg2rad(deg) {
     return (deg * Math.PI) / 180;
@@ -6493,7 +6494,7 @@ function updateValue(value, animate, vis) {
     vis.clipPath
         .transition()
         .ease(expOut)
-        .duration(animate ? vis.elementOptions.duration : 0)
+        .duration(animate ? 750 : 0)
         .attrTween('d', function (d) {
         var newAngle = value2chart(value, vis.elementOptions.perimeter);
         var interpolatedValue = src_value(d.endAngle, newAngle);
@@ -6507,14 +6508,6 @@ var gauge_vis = {
     id: 'gauge',
     label: 'Gauge',
     options: {
-        transitionDuration: {
-            label: 'transitionDuration',
-            min: 0,
-            default: defaults.transitionDuration,
-            section: 'Style',
-            type: 'number',
-            placeholder: 'Delay in seconds'
-        },
         circleThickness: {
             label: 'Circle thickness',
             min: 1,
@@ -6534,6 +6527,13 @@ var gauge_vis = {
         baseColor: {
             label: 'Base color',
             default: defaults.baseColor,
+            section: 'Style',
+            type: 'string',
+            display: 'color'
+        },
+        textColor: {
+            label: 'Text color',
+            default: defaults.textColor,
             section: 'Style',
             type: 'string',
             display: 'color'
@@ -6668,7 +6668,7 @@ var gauge_vis = {
         var denominator = firstRow[queryResponse.fields.measures[1].name].value;
         var percentage = ((nominator / denominator) * 100).toFixed(1);
         // Insert the data into the page.
-        this.textElement.innerHTML = "\n\t\t\t<h1 class=\"value-label\">\n      " + percentage + "%\n      </h1>\n      <span class=\"value-breakdown tv-h-flex-center tv-h-flex-justify-center\">\n      " + nominator + " / " + denominator + "\n      </span>\n\t\t";
+        this.textElement.innerHTML = "\n\t\t\t<h1 class=\"value-label\" style=\"color:" + this.gaugeConfig.textColor + "\">\n      " + percentage + "%\n      </h1>\n      <span class=\"value-breakdown\" style=\"color:" + this.gaugeConfig.textColor + "\">\n      " + nominator + " / " + denominator + "\n      </span>\n\t\t";
         buildChart(this.chartElement, data, queryResponse, this);
         // Always call done to indicate a visualization has finished rendering.
         // done();

@@ -31,7 +31,8 @@ const defaults: any = {
   height: 175,
   transitionDuration: 1000,
   circleThickness: 10,
-  baseColor: '#00b7a8'
+  baseColor: '#00b7a8',
+  textColor: '#000000'
 };
 
 function deg2rad(deg: number) {
@@ -146,7 +147,7 @@ function updateValue(value: number, animate: boolean, vis: any) {
   vis.clipPath
     .transition()
     .ease(easeExpOut)
-    .duration(animate ? vis.elementOptions.duration : 0)
+    .duration(animate ? 750 : 0)
     .attrTween('d', (d: any) => {
       const newAngle = value2chart(value, vis.elementOptions.perimeter);
       const interpolatedValue = interpolate(d.endAngle, newAngle);
@@ -163,14 +164,6 @@ const vis: GaugeVisualization = {
   id: 'gauge', // id/label not required, but nice for testing and keeping manifests in sync
   label: 'Gauge',
   options: {
-    transitionDuration: {
-      label: 'transitionDuration',
-      min: 0,
-      default: defaults.transitionDuration,
-      section: 'Style',
-      type: 'number',
-      placeholder: 'Delay in seconds'
-    },
     circleThickness: {
       label: 'Circle thickness',
       min: 1,
@@ -190,6 +183,13 @@ const vis: GaugeVisualization = {
     baseColor: {
       label: 'Base color',
       default: defaults.baseColor,
+      section: 'Style',
+      type: 'string',
+      display: 'color'
+    },
+    textColor: {
+      label: 'Text color',
+      default: defaults.textColor,
       section: 'Style',
       type: 'string',
       display: 'color'
@@ -383,10 +383,10 @@ const vis: GaugeVisualization = {
 
     // Insert the data into the page.
     this.textElement.innerHTML = `
-			<h1 class="value-label">
+			<h1 class="value-label" style="color:${this.gaugeConfig.textColor}">
       ${percentage}%
       </h1>
-      <span class="value-breakdown tv-h-flex-center tv-h-flex-justify-center">
+      <span class="value-breakdown" style="color:${this.gaugeConfig.textColor}">
       ${nominator} / ${denominator}
       </span>
 		`;
