@@ -6687,11 +6687,11 @@ function getChartOptions(element, vis) {
     var perimeter = deg2rad(360 - vis.gaugeConfig.circleGap);
     var lateralOffset = (circleRad - perimeter) / 2;
     var angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
-    var radius = { inner: defaults.height / 2 - defaults.circleThickness, outer: defaults.height / 2 };
+    var radius = { inner: defaults.height / 2 - vis.gaugeConfig.circleThickness, outer: defaults.height / 2 };
     var width = element.offsetWidth;
     var height = defaults.height;
-    var duration = defaults.transitionDuration;
-    var baseColor = defaults.baseColor;
+    var duration = vis.gaugeConfig.transitionDuration;
+    var baseColor = vis.gaugeConfig.baseColor;
     return { width: width, height: height, duration: duration, perimeter: perimeter, radius: radius, angles: angles, baseColor: baseColor };
 }
 function value2chart(value, perimeter) {
@@ -6773,7 +6773,7 @@ function buildChart(element, data, queryResponse, vis) {
         .datum({ endAngle: value2chart(0, opts.perimeter) })
         .attr('d', vis.gaugeArc);
     // Animate the chart to the actual provided value
-    updateValue(((nominator / denominator) * 100), false, vis);
+    updateValue(((nominator / denominator) * 100), true, vis);
 }
 function updateValue(value, animate, vis) {
     vis.clipPath
@@ -6793,33 +6793,19 @@ var vis = {
     id: 'gauge',
     label: 'Gauge',
     options: {
-        showComparison: {
-            label: 'Use field comparison',
-            default: false,
-            section: 'Value',
-            type: 'boolean'
-        },
-        minValue: {
-            label: 'Min value',
+        transitionDuration: {
+            label: 'transitionDuration',
             min: 0,
-            default: defaults.minValue,
+            default: defaults.transitionDuration,
             section: 'Value',
             type: 'number',
-            placeholder: 'Any positive number'
-        },
-        maxValue: {
-            label: 'Max value',
-            min: 0,
-            default: defaults.maxValue,
-            section: 'Value',
-            type: 'number',
-            placeholder: 'Any positive number'
+            placeholder: 'Delay in seconds'
         },
         circleThickness: {
-            label: 'Circle Thickness',
+            label: 'Circle thickness',
             min: 0,
-            max: 1,
-            step: 0.05,
+            max: 20,
+            step: 1,
             default: defaults.circleThickness,
             section: 'Style',
             type: 'number',
@@ -6835,129 +6821,9 @@ var vis = {
             type: 'number',
             display: 'range'
         },
-        circleColor: {
-            label: 'Circle Color',
-            default: defaults.circleColor,
-            section: 'Style',
-            type: 'string',
-            display: 'color'
-        },
-        waveHeight: {
-            label: 'Wave Height',
-            min: 0,
-            max: 1,
-            step: 0.05,
-            default: defaults.waveHeight,
-            section: 'Waves',
-            type: 'number',
-            display: 'range'
-        },
-        waveCount: {
-            label: 'Wave Count',
-            min: 0,
-            max: 10,
-            default: defaults.waveCount,
-            section: 'Waves',
-            type: 'number',
-            display: 'range'
-        },
-        waveRiseTime: {
-            label: 'Wave Rise Time',
-            min: 0,
-            max: 5000,
-            step: 50,
-            default: defaults.waveRiseTime,
-            section: 'Waves',
-            type: 'number',
-            display: 'range'
-        },
-        waveAnimateTime: {
-            label: 'Wave Animation Time',
-            min: 0,
-            max: 5000,
-            step: 50,
-            default: defaults.waveAnimateTime,
-            section: 'Waves',
-            type: 'number',
-            display: 'range'
-        },
-        waveRise: {
-            label: 'Wave Rise from Bottom',
-            default: defaults.waveRise,
-            section: 'Waves',
-            type: 'boolean'
-        },
-        waveHeightScaling: {
-            label: 'Scale waves if high or low',
-            default: defaults.waveHeightScaling,
-            section: 'Waves',
-            type: 'boolean'
-        },
-        waveAnimate: {
-            label: 'Animate Waves',
-            default: true,
-            section: 'Waves',
-            type: 'boolean'
-        },
-        waveColor: {
-            label: 'Wave Color',
-            default: '#64518A',
-            section: 'Style',
-            type: 'string',
-            display: 'color'
-        },
-        waveOffset: {
-            label: 'Wave Offset',
-            min: 0,
-            max: 1,
-            step: 0.05,
-            default: 0,
-            section: 'Waves',
-            type: 'number',
-            display: 'range'
-        },
-        textVertPosition: {
-            label: 'Text Vertical Offset',
-            min: 0,
-            max: 1,
-            step: 0.01,
-            default: 0.5,
-            section: 'Value',
-            type: 'number',
-            display: 'range'
-        },
-        textSize: {
-            label: 'Text Size',
-            min: 0,
-            max: 1,
-            step: 0.01,
-            default: 1,
-            section: 'Value',
-            type: 'number',
-            display: 'range'
-        },
-        valueCountUp: {
-            label: 'Animate to Value',
-            default: true,
-            section: 'Waves',
-            type: 'boolean'
-        },
-        displayPercent: {
-            label: 'Display as Percent',
-            default: true,
-            section: 'Value',
-            type: 'boolean'
-        },
-        textColor: {
-            label: 'Text Color (non-overlapped)',
-            default: '#000000',
-            section: 'Style',
-            type: 'string',
-            display: 'color'
-        },
-        waveTextColor: {
-            label: 'Text Color (overlapped)',
-            default: '#FFFFFF',
+        baseColor: {
+            label: 'Base color',
+            default: defaults.baseColor,
             section: 'Style',
             type: 'string',
             display: 'color'

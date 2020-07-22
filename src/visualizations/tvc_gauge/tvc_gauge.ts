@@ -44,11 +44,11 @@ function getChartOptions(element: any, vis: any) {
   const perimeter = deg2rad(360 - vis.gaugeConfig.circleGap);
   const lateralOffset = (circleRad - perimeter) / 2;
   const angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
-  const radius = { inner: defaults.height / 2 - defaults.circleThickness, outer: defaults.height / 2 };
+  const radius = { inner: defaults.height / 2 - vis.gaugeConfig.circleThickness, outer: defaults.height / 2 };
   const width = element.offsetWidth;
   const height = defaults.height;
-  const duration = defaults.transitionDuration;
-  const baseColor = defaults.baseColor;
+  const duration = vis.gaugeConfig.transitionDuration;
+  const baseColor = vis.gaugeConfig.baseColor;
 
   return { width, height, duration, perimeter, radius, angles, baseColor };
 }
@@ -152,7 +152,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .attr('d', vis.gaugeArc);
 
   // Animate the chart to the actual provided value
-  updateValue(((nominator / denominator) * 100), false, vis);
+  updateValue(((nominator / denominator) * 100), true, vis);
 }
 
 function updateValue(value: number, animate: boolean, vis: any) {
@@ -176,33 +176,19 @@ const vis: GaugeVisualization = {
   id: 'gauge', // id/label not required, but nice for testing and keeping manifests in sync
   label: 'Gauge',
   options: {
-    showComparison: {
-      label: 'Use field comparison',
-      default: false,
-      section: 'Value',
-      type: 'boolean'
-    },
-    minValue: {
-      label: 'Min value',
+    transitionDuration: {
+      label: 'transitionDuration',
       min: 0,
-      default: defaults.minValue,
+      default: defaults.transitionDuration,
       section: 'Value',
       type: 'number',
-      placeholder: 'Any positive number'
-    },
-    maxValue: {
-      label: 'Max value',
-      min: 0,
-      default: defaults.maxValue,
-      section: 'Value',
-      type: 'number',
-      placeholder: 'Any positive number'
+      placeholder: 'Delay in seconds'
     },
     circleThickness: {
-      label: 'Circle Thickness',
+      label: 'Circle thickness',
       min: 0,
-      max: 1,
-      step: 0.05,
+      max: 20,
+      step: 1,
       default: defaults.circleThickness,
       section: 'Style',
       type: 'number',
@@ -218,129 +204,9 @@ const vis: GaugeVisualization = {
       type: 'number',
       display: 'range'
     },
-    circleColor: {
-      label: 'Circle Color',
-      default: defaults.circleColor,
-      section: 'Style',
-      type: 'string',
-      display: 'color'
-    },
-    waveHeight: {
-      label: 'Wave Height',
-      min: 0,
-      max: 1,
-      step: 0.05,
-      default: defaults.waveHeight,
-      section: 'Waves',
-      type: 'number',
-      display: 'range'
-    },
-    waveCount: {
-      label: 'Wave Count',
-      min: 0,
-      max: 10,
-      default: defaults.waveCount,
-      section: 'Waves',
-      type: 'number',
-      display: 'range'
-    },
-    waveRiseTime: {
-      label: 'Wave Rise Time',
-      min: 0,
-      max: 5000,
-      step: 50,
-      default: defaults.waveRiseTime,
-      section: 'Waves',
-      type: 'number',
-      display: 'range'
-    },
-    waveAnimateTime: {
-      label: 'Wave Animation Time',
-      min: 0,
-      max: 5000,
-      step: 50,
-      default: defaults.waveAnimateTime,
-      section: 'Waves',
-      type: 'number',
-      display: 'range'
-    },
-    waveRise: {
-      label: 'Wave Rise from Bottom',
-      default: defaults.waveRise,
-      section: 'Waves',
-      type: 'boolean'
-    },
-    waveHeightScaling: {
-      label: 'Scale waves if high or low',
-      default: defaults.waveHeightScaling,
-      section: 'Waves',
-      type: 'boolean'
-    },
-    waveAnimate: {
-      label: 'Animate Waves',
-      default: true,
-      section: 'Waves',
-      type: 'boolean'
-    },
-    waveColor: {
-      label: 'Wave Color',
-      default: '#64518A',
-      section: 'Style',
-      type: 'string',
-      display: 'color'
-    },
-    waveOffset: {
-      label: 'Wave Offset',
-      min: 0,
-      max: 1,
-      step: 0.05,
-      default: 0,
-      section: 'Waves',
-      type: 'number',
-      display: 'range'
-    },
-    textVertPosition: {
-      label: 'Text Vertical Offset',
-      min: 0,
-      max: 1,
-      step: 0.01,
-      default: 0.5,
-      section: 'Value',
-      type: 'number',
-      display: 'range'
-    },
-    textSize: {
-      label: 'Text Size',
-      min: 0,
-      max: 1,
-      step: 0.01,
-      default: 1,
-      section: 'Value',
-      type: 'number',
-      display: 'range'
-    },
-    valueCountUp: {
-      label: 'Animate to Value',
-      default: true,
-      section: 'Waves',
-      type: 'boolean'
-    },
-    displayPercent: {
-      label: 'Display as Percent',
-      default: true,
-      section: 'Value',
-      type: 'boolean'
-    },
-    textColor: {
-      label: 'Text Color (non-overlapped)',
-      default: '#000000',
-      section: 'Style',
-      type: 'string',
-      display: 'color'
-    },
-    waveTextColor: {
-      label: 'Text Color (overlapped)',
-      default: '#FFFFFF',
+    baseColor: {
+      label: 'Base color',
+      default: defaults.baseColor,
       section: 'Style',
       type: 'string',
       display: 'color'
