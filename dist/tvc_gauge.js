@@ -6684,7 +6684,7 @@ function deg2rad(deg) {
 function getChartOptions(element, vis) {
     debugger;
     var circleRad = Math.PI * 2;
-    var perimeter = deg2rad(360 - vis.options.circleGap);
+    var perimeter = deg2rad(360 - vis.gaugeConfig.circleGap);
     var lateralOffset = (circleRad - perimeter) / 2;
     var angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
     var radius = { inner: defaults.height / 2 - defaults.circleThickness, outer: defaults.height / 2 };
@@ -7072,6 +7072,7 @@ var vis = {
     
         (d3 as any).gauge(this.svg, value, gaugeConfig)*/
         // Clear any errors from previous updates.
+        this.gaugeConfig = Object.assign(defaults, config);
         // @ts-ignore
         this.clearErrors();
         // Throw some errors and exit if the shape of the data isn't what this chart needs.

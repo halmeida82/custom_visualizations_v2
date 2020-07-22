@@ -16,6 +16,7 @@ interface GaugeVisualization extends VisualizationDefinition {
   chartElement?: any;
   textElement?: any;
 
+  gaugeConfig?: any;
   elementOptions?: any;
   chart?: Selection<BaseType, {}, HTMLElement, any>;
   gaugeArc?: Arc<any, DefaultArcObject>;
@@ -40,7 +41,7 @@ function deg2rad(deg: number) {
 function getChartOptions(element: any, vis: any) {
   debugger;
   const circleRad = Math.PI * 2;
-  const perimeter = deg2rad(360 - vis.options.circleGap);
+  const perimeter = deg2rad(360 - vis.gaugeConfig.circleGap);
   const lateralOffset = (circleRad - perimeter) / 2;
   const angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
   const radius = { inner: defaults.height / 2 - defaults.circleThickness, outer: defaults.height / 2 };
@@ -508,6 +509,9 @@ const vis: GaugeVisualization = {
     (d3 as any).gauge(this.svg, value, gaugeConfig)*/
 
     // Clear any errors from previous updates.
+
+    this.gaugeConfig = Object.assign(defaults, config);
+
     // @ts-ignore
     this.clearErrors();
 
