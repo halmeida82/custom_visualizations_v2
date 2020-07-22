@@ -38,6 +38,7 @@ function deg2rad(deg: number) {
 }
 
 function getChartOptions(element: any, vis: any) {
+  debugger;
   const circleRad = Math.PI * 2;
   const perimeter = deg2rad(360 - vis.circleGap);
   const lateralOffset = (circleRad - perimeter) / 2;
