@@ -6743,7 +6743,6 @@ function buildChart(element, data, queryResponse, vis) {
     });
     vis.gradientId = 'foreground-clip-1';
     // Create group for the gradient using the clipPath element as clipping path
-    // this.gradientGroup = this.chart.append('g').attr('clip-path', this.gradientId);
     vis.gradientGroup = vis.chart.append('g').attr('clip-path', "url(" + window.location + "#" + vis.gradientId + ")");
     // Map colors to the gradient slices from the darker to the brighter color variants
     vis.gradientGroup
@@ -6852,7 +6851,7 @@ var vis = {
         this.textElement = container.appendChild(document.createElement('div'));
     },
     // Render in response to the data or settings changing
-    updateAsync: function (data, element, config, queryResponse, details, done) {
+    update: function (data, element, config, queryResponse, details) {
         /*if (
           !handleErrors(this, queryResponse, {
             min_pivots: 0,
@@ -6957,7 +6956,7 @@ var vis = {
         this.textElement.innerHTML = "\n\t\t\t<h1 class=\"value-label\">\n      " + percentage + "%\n      </h1>\n      <span class=\"value-breakdown tv-h-flex-center tv-h-flex-justify-center\">\n      " + nominator + " / " + denominator + "\n      </span>\n\t\t";
         buildChart(this.chartElement, data, queryResponse, this);
         // Always call done to indicate a visualization has finished rendering.
-        done();
+        // done();
     }
 };
 looker.plugins.visualizations.add(vis);
