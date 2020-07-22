@@ -39,7 +39,6 @@ function deg2rad(deg: number) {
 }
 
 function getChartOptions(element: any, vis: any) {
-  debugger;
   const circleRad = Math.PI * 2;
   const perimeter = deg2rad(360 - vis.gaugeConfig.circleGap);
   const lateralOffset = (circleRad - perimeter) / 2;
@@ -92,18 +91,12 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .startAngle(opts.angles.start)
     .cornerRadius((opts.radius.outer - opts.radius.inner) / 2);
 
-  debugger;
-
-  console.log(vis.gaugeArc);
-
   // Generate gray background
   vis.chart
     .append('path')
     .datum({ endAngle: opts.angles.end })
     .style('fill', '#ddd')
     .attr('d', vis.gaugeArc);
-
-  debugger;
 
   // Generate arc for the gradient
   const gradientArc = arc()
@@ -134,7 +127,6 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .attr('class', 'piece')
     .attr('d', gradientArc)
     .style('fill', (d: any) => {
-      debugger;
       const red = colorDarker.r + (d.percentage / 100) * (colorBrighter.r - colorDarker.r);
       const green = colorDarker.g + (d.percentage / 100) * (colorBrighter.g - colorDarker.g);
       const blue = colorDarker.b + (d.percentage / 100) * (colorBrighter.b - colorDarker.b);
@@ -368,16 +360,11 @@ const vis: GaugeVisualization = {
         waveRise: false
       })
     }
-
-    // @ts-ignore
-    debugger
-
-    (d3 as any).gauge(this.svg, value, gaugeConfig)*/
-
-    // Clear any errors from previous updates.
+  */
 
     this.gaugeConfig = Object.assign(defaults, config);
 
+    // Clear any errors from previous updates.
     // @ts-ignore
     this.clearErrors();
 

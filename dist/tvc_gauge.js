@@ -6682,7 +6682,6 @@ function deg2rad(deg) {
     return (deg * Math.PI) / 180;
 }
 function getChartOptions(element, vis) {
-    debugger;
     var circleRad = Math.PI * 2;
     var perimeter = deg2rad(360 - vis.gaugeConfig.circleGap);
     var lateralOffset = (circleRad - perimeter) / 2;
@@ -6724,15 +6723,12 @@ function buildChart(element, data, queryResponse, vis) {
         .outerRadius(opts.radius.outer)
         .startAngle(opts.angles.start)
         .cornerRadius((opts.radius.outer - opts.radius.inner) / 2);
-    debugger;
-    console.log(vis.gaugeArc);
     // Generate gray background
     vis.chart
         .append('path')
         .datum({ endAngle: opts.angles.end })
         .style('fill', '#ddd')
         .attr('d', vis.gaugeArc);
-    debugger;
     // Generate arc for the gradient
     var gradientArc = Object(d3_shape__WEBPACK_IMPORTED_MODULE_5__[/* arc */ "a"])()
         .innerRadius(opts.radius.inner)
@@ -6758,7 +6754,6 @@ function buildChart(element, data, queryResponse, vis) {
         .attr('class', 'piece')
         .attr('d', gradientArc)
         .style('fill', function (d) {
-        debugger;
         var red = colorDarker.r + (d.percentage / 100) * (colorBrighter.r - colorDarker.r);
         var green = colorDarker.g + (d.percentage / 100) * (colorBrighter.g - colorDarker.g);
         var blue = colorDarker.b + (d.percentage / 100) * (colorBrighter.b - colorDarker.b);
@@ -6932,13 +6927,9 @@ var vis = {
             waveRise: false
           })
         }
-    
-        // @ts-ignore
-        debugger
-    
-        (d3 as any).gauge(this.svg, value, gaugeConfig)*/
-        // Clear any errors from previous updates.
+      */
         this.gaugeConfig = Object.assign(defaults, config);
+        // Clear any errors from previous updates.
         // @ts-ignore
         this.clearErrors();
         // Throw some errors and exit if the shape of the data isn't what this chart needs.
