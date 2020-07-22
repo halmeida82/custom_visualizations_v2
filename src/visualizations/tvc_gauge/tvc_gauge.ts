@@ -37,10 +37,10 @@ function deg2rad(deg: number) {
   return (deg * Math.PI) / 180;
 }
 
-function getChartOptions(element: any, vis: any) {
+function getChartOptions(element: any) {
   debugger;
   const circleRad = Math.PI * 2;
-  const perimeter = deg2rad(360 - vis.circleGap);
+  const perimeter = deg2rad(360 - defaults.circleGap);
   const lateralOffset = (circleRad - perimeter) / 2;
   const angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
   const radius = { inner: defaults.height / 2 - defaults.circleThickness, outer: defaults.height / 2 };
@@ -67,7 +67,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
   const nominator = firstRow[queryResponse.fields.measures[0].name].value;
   const denominator = firstRow[queryResponse.fields.measures[1].name].value;
 
-  const opts = vis.elementOptions = getChartOptions(element, vis);
+  const opts = vis.elementOptions = getChartOptions(element);
 
   const colorDarker = rgb(opts.baseColor).darker(0.5);
   const colorBrighter = rgb(opts.baseColor).brighter(0.5);
