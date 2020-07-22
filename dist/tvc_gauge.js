@@ -6681,10 +6681,10 @@ var defaults = {
 function deg2rad(deg) {
     return (deg * Math.PI) / 180;
 }
-function getChartOptions(element) {
+function getChartOptions(element, vis) {
     debugger;
     var circleRad = Math.PI * 2;
-    var perimeter = deg2rad(360 - defaults.circleGap);
+    var perimeter = deg2rad(360 - vis.options.circleGap);
     var lateralOffset = (circleRad - perimeter) / 2;
     var angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
     var radius = { inner: defaults.height / 2 - defaults.circleThickness, outer: defaults.height / 2 };
@@ -6705,7 +6705,7 @@ function buildChart(element, data, queryResponse, vis) {
     var firstRow = data[0];
     var nominator = firstRow[queryResponse.fields.measures[0].name].value;
     var denominator = firstRow[queryResponse.fields.measures[1].name].value;
-    var opts = vis.elementOptions = getChartOptions(element);
+    var opts = vis.elementOptions = getChartOptions(element, vis);
     var colorDarker = Object(d3_color__WEBPACK_IMPORTED_MODULE_1__[/* rgb */ "f"])(opts.baseColor).darker(0.5);
     var colorBrighter = Object(d3_color__WEBPACK_IMPORTED_MODULE_1__[/* rgb */ "f"])(opts.baseColor).brighter(0.5);
     var chartContainer = Object(d3_selection__WEBPACK_IMPORTED_MODULE_4__[/* select */ "k"])(element);
@@ -6825,12 +6825,12 @@ var vis = {
             type: 'number',
             display: 'range'
         },
-        circleFillGap: {
-            label: 'Circle Gap',
+        circleGap: {
+            label: 'Circle gap',
             min: 0,
-            max: 1,
-            step: 0.05,
-            default: defaults.circleFillGap,
+            max: 180,
+            step: 5,
+            default: defaults.circleGap,
             section: 'Style',
             type: 'number',
             display: 'range'
