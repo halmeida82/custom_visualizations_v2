@@ -63,6 +63,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
   const firstRow = data[0];
   const nominator = firstRow[queryResponse.fields.measures[0].name].value;
   const denominator = firstRow[queryResponse.fields.measures[1].name].value;
+  const percentage = denominator === 0 ? 0 : (nominator / denominator) * 100;
 
   const opts = vis.elementOptions = getChartOptions(element, vis);
 
@@ -140,7 +141,7 @@ function buildChart(element: any, data: any, queryResponse: any, vis: any) {
     .attr('d', vis.gaugeArc);
 
   // Animate the chart to the actual provided value
-  updateValue(((nominator / denominator) * 100), true, vis);
+  updateValue(percentage, true, vis);
 }
 
 function updateValue(value: number, animate: boolean, vis: any) {
@@ -387,7 +388,7 @@ const vis: GaugeVisualization = {
     const firstRow = data[0];
     const nominator = firstRow[queryResponse.fields.measures[0].name].value;
     const denominator = firstRow[queryResponse.fields.measures[1].name].value;
-    const percentage = ((nominator / denominator) * 100).toFixed(1);
+    const percentage = denominator === 0 ? (0).toFixed(1) : ((nominator / denominator) * 100).toFixed(1);
 
     // Insert the data into the page.
     this.textElement.innerHTML = `

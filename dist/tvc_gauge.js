@@ -6425,6 +6425,7 @@ function buildChart(element, data, queryResponse, vis) {
     var firstRow = data[0];
     var nominator = firstRow[queryResponse.fields.measures[0].name].value;
     var denominator = firstRow[queryResponse.fields.measures[1].name].value;
+    var percentage = denominator === 0 ? 0 : (nominator / denominator) * 100;
     var opts = vis.elementOptions = getChartOptions(element, vis);
     var colorDarker = color_rgb(opts.baseColor).darker(0.5);
     var colorBrighter = color_rgb(opts.baseColor).brighter(0.5);
@@ -6488,7 +6489,7 @@ function buildChart(element, data, queryResponse, vis) {
         .datum({ endAngle: value2chart(0, opts.perimeter) })
         .attr('d', vis.gaugeArc);
     // Animate the chart to the actual provided value
-    updateValue(((nominator / denominator) * 100), true, vis);
+    updateValue(percentage, true, vis);
 }
 function updateValue(value, animate, vis) {
     vis.clipPath
@@ -6674,7 +6675,7 @@ var gauge_vis = {
         var firstRow = data[0];
         var nominator = firstRow[queryResponse.fields.measures[0].name].value;
         var denominator = firstRow[queryResponse.fields.measures[1].name].value;
-        var percentage = ((nominator / denominator) * 100).toFixed(1);
+        var percentage = denominator === 0 ? (0).toFixed(1) : ((nominator / denominator) * 100).toFixed(1);
         // Insert the data into the page.
         this.textElement.innerHTML = "\n\t\t\t<h1 class=\"value-label\" style=\"color:" + this.gaugeConfig.textColor + "\">\n      " + percentage + "%\n      </h1>\n      <span class=\"value-breakdown\" style=\"color:" + this.gaugeConfig.textColor + "\">\n      " + nominator + " / " + denominator + "\n      </span>\n\t\t";
         buildChart(this.chartElement, data, queryResponse, this);
