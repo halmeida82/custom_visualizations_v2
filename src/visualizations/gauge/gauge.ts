@@ -15,6 +15,7 @@ interface GaugeVisualization extends VisualizationDefinition {
   svg?: any;
   chartElement?: any;
   textElement?: any;
+  videoElement?: any;
 
   gaugeConfig?: any;
   elementOptions?: any;
@@ -189,6 +190,12 @@ const vis: GaugeVisualization = {
       section: 'Config',
       type: 'number'
     },
+    automationId: {
+      label: 'Automation ID (For automated testing)',
+      default: 'tvc_gauge',
+      section: 'Config',
+      type: 'string'
+    },
     baseColor: {
       label: 'Base color',
       default: defaults.baseColor,
@@ -206,22 +213,8 @@ const vis: GaugeVisualization = {
   },
   // Set up the initial state of the visualization
   create(element, config) {
-    /*element.style.margin = '10px'
-    element.style.fontFamily = `'Open Sans', 'Helvetica', sans-serif`
-    element.innerHTML = `
-      <style>
-        .node, .link {
-          transition: 0.5s opacity;
-        }
-      </style>
-    `
-    const elementId = `fill-gauge-${Date.now()}`
-    this.svg = d3.select(element).append('svg')
-    this.svg.attr('id', elementId)
 
-    // Create an element to contain the text.
-    this._textElement = container.appendChild(document.createElement("div"));
-    this._chartElement = container.appendChild(document.createElement("div"));*/
+    this.gaugeConfig = Object.assign(defaults, config);
 
     // Insert a <style> tag with some styles we'll use later.
     element.innerHTML = `
@@ -233,7 +226,8 @@ const vis: GaugeVisualization = {
 		}
 
     .hello-world-text-large {
-        font-size: 18px;/*72px;*/
+        font-family: Monserrat,"Open Sans",Helvetica,Arial,sans-serif;
+        font-size: 32px;/*72px;*/
 				position:absolute;
 				width:95%;
 				text-align:center;
@@ -278,89 +272,16 @@ const vis: GaugeVisualization = {
     // Create a container element to let us center the text.
     const container = element.appendChild(document.createElement('div'));
     container.className = 'hello-world-vis';
+    container.setAttribute('automationId', this.gaugeConfig.automationId);
 
     // Create an element to contain the text.
     this.chartElement = container.appendChild(document.createElement('div'));
     this.textElement = container.appendChild(document.createElement('div'));
+    this.videoElement = container.appendChild(document.createElement('div'));
 
   },
   // Render in response to the data or settings changing
   update(data, element, config, queryResponse, details) {
-    /*if (
-      !handleErrors(this, queryResponse, {
-        min_pivots: 0,
-        max_pivots: 0,
-        min_dimensions: 0,
-        max_dimensions: undefined,
-        min_measures: 1,
-        max_measures: undefined
-      })
-    ) {
-      return
-    }
-
-    // @ts-ignore
-    const gaugeConfig = Object.assign(Gauge.defaultConfig, config)
-
-    if (this.addError && this.clearErrors) {
-      if (gaugeConfig.maxValue <= 0) {
-        this.addError({
-          group: 'config',
-          title: 'Max value must be greater than zero.'
-        })
-        return
-      } else if (data.length === 0) {
-        this.addError({
-          title: 'No results.'
-        })
-        return
-      } else {
-        this.clearErrors('config')
-      }
-    }
-
-    const firstRow = data[0]
-    const nominator = firstRow[queryResponse.fields.measures[0].name].value
-    const denominator = firstRow[queryResponse.fields.measures[1].name].value
-
-    // Insert the data into the page.
-    // this._textElement.innerHTML = `${nominator} / ${denominator}`;
-
-    buildChart(this._chartElement,data,queryResponse)
-
-    // Always call done to indicate a visualization has finished rendering.
-    done()
-
-    /*const datumField = queryResponse.fields.measure_like[0]
-    const datum = data[0][datumField.name]
-    let value = datum.value
-
-    const compareField = queryResponse.fields.measure_like[1]
-    if (compareField && gaugeConfig.showComparison) {
-      const compareDatum = data[0][compareField.name]
-      gaugeConfig.maxValue = compareDatum.value
-    }
-
-    if (gaugeConfig.displayPercent) {
-      value = (datum.value / gaugeConfig.maxValue) * 100
-      gaugeConfig.maxValue = 100
-    }
-
-    this.svg.html('')
-    this.svg.attr('width', element.clientWidth - 20)
-    this.svg.attr('height', element.clientHeight - 20)
-
-    // @ts-ignore
-    if (details['print']) {
-      Object.assign(gaugeConfig, {
-        valueCountUp: false,
-        waveAnimateTime: 0,
-        waveRiseTime: 0,
-        waveAnimate: false,
-        waveRise: false
-      })
-    }
-  */
 
     this.gaugeConfig = Object.assign(defaults, config);
 
@@ -398,7 +319,13 @@ const vis: GaugeVisualization = {
       <span class="value-breakdown" style="color:${this.gaugeConfig.textColor}">
       ${nominator} / ${denominator}
       </span>
-		`;
+    `;
+
+    this.videoElement.innreHTML = `
+      <video width="320" height="240" controls>
+        <source src="https://zhstatic.zhihu.com/cfe/griffith/zhihu2018_hd.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>`;
 
     buildChart(this.chartElement,data,queryResponse, this);
 
