@@ -6400,7 +6400,8 @@ var defaults = {
     transitionDuration: 1000,
     circleThickness: 10,
     baseColor: '#00b7a8',
-    textColor: '#000000'
+    textColor: '#000000',
+    automationId: 'tvc-gauge'
 };
 function gauge_deg2rad(deg) {
     return (deg * Math.PI) / 180;
@@ -6559,6 +6560,7 @@ var gauge_vis = {
         this.gaugeConfig = Object.assign(defaults, config);
         // Insert a <style> tag with some styles we'll use later.
         element.innerHTML = "\n    <style>\n\t\t* {\n\t\t\t\tfont-family: \"Open Sans\",Helvetica,Arial,sans-serif;\n    \t\tfont-weight: 400;\n    \t\tfont-size: 14px;\n\t\t}\n\n    .hello-world-text-large {\n        font-family: Monserrat,\"Open Sans\",Helvetica,Arial,sans-serif;\n        font-size: 32px;/*72px;*/\n\t\t\t\tposition:absolute;\n\t\t\t\twidth:95%;\n\t\t\t\ttext-align:center;\n    }\n    .hello-world-text-small {\n        font-size: 18px;\n\t\t\t\tposition:absolute;\n\t\t\t\twidth:95%;\n\t\t\t\ttext-align:center;\n    }\n    .hello-world-vis {\n        // Vertical centering\n        height: 100%;\n        display: flex;\n        flex-direction: column;\n        justify-content: center;\n        text-align: center;\n\t\t\t\tposition:relative\n    }\n\t\t.chart-details {\n        position: absolute;\n        top: 50%;\n        left: 50%;\n        transform: translate(-50%, -50%);\n    }\n\n\t\t.chart-details h1.value-label {\n\t\t\t\tline-height: 1;\n\t\t\t\tfont-family: Montserrat,Helvetica,Arial,sans-serif;\n\t\t    font-weight: 400;\n    \t\tfont-size: 32px;\n\t\t    text-transform: uppercase;\n\t\t}\n\n\t\t.chart-details span.value-breakdown {\n\t\t\t\talign-items: center;\n\t\t\t\tfont-size: 12px;\n\t\t}\n\n    </style>";
+        debugger;
         // Create a container element to let us center the text.
         var container = element.appendChild(document.createElement('div'));
         container.className = 'hello-world-vis';
@@ -6566,7 +6568,6 @@ var gauge_vis = {
         // Create an element to contain the text.
         this.chartElement = container.appendChild(document.createElement('div'));
         this.textElement = container.appendChild(document.createElement('div'));
-        this.videoElement = container.appendChild(document.createElement('div'));
     },
     // Render in response to the data or settings changing
     update: function (data, element, config, queryResponse, details) {
@@ -6596,7 +6597,6 @@ var gauge_vis = {
         var percentage = denominator === 0 ? (0).toFixed(1) : ((nominator / denominator) * 100).toFixed(1);
         // Insert the data into the page.
         this.textElement.innerHTML = "\n\t\t\t<h1 class=\"value-label\" style=\"color:" + this.gaugeConfig.textColor + "\">\n      " + percentage + "%\n      </h1>\n      <span class=\"value-breakdown\" style=\"color:" + this.gaugeConfig.textColor + "\">\n      " + nominator + " / " + denominator + "\n      </span>\n    ";
-        this.videoElement.innreHTML = "\n      <video width=\"320\" height=\"240\" controls>\n        <source src=\"https://zhstatic.zhihu.com/cfe/griffith/zhihu2018_hd.mp4\" type=\"video/mp4\">\n        Your browser does not support the video tag.\n      </video>";
         buildChart(this.chartElement, data, queryResponse, this);
         // Always call done to indicate a visualization has finished rendering.
         // done();

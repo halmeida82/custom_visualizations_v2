@@ -15,7 +15,6 @@ interface GaugeVisualization extends VisualizationDefinition {
   svg?: any;
   chartElement?: any;
   textElement?: any;
-  videoElement?: any;
 
   gaugeConfig?: any;
   elementOptions?: any;
@@ -33,7 +32,8 @@ const defaults: any = {
   transitionDuration: 1000,
   circleThickness: 10,
   baseColor: '#00b7a8',
-  textColor: '#000000'
+  textColor: '#000000',
+  automationId: 'tvc-gauge'
 };
 
 function deg2rad(deg: number) {
@@ -269,6 +269,8 @@ const vis: GaugeVisualization = {
 
     </style>`;
 
+    debugger;
+
     // Create a container element to let us center the text.
     const container = element.appendChild(document.createElement('div'));
     container.className = 'hello-world-vis';
@@ -277,7 +279,6 @@ const vis: GaugeVisualization = {
     // Create an element to contain the text.
     this.chartElement = container.appendChild(document.createElement('div'));
     this.textElement = container.appendChild(document.createElement('div'));
-    this.videoElement = container.appendChild(document.createElement('div'));
 
   },
   // Render in response to the data or settings changing
@@ -320,12 +321,6 @@ const vis: GaugeVisualization = {
       ${nominator} / ${denominator}
       </span>
     `;
-
-    this.videoElement.innreHTML = `
-      <video width="320" height="240" controls>
-        <source src="https://zhstatic.zhihu.com/cfe/griffith/zhihu2018_hd.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>`;
 
     buildChart(this.chartElement,data,queryResponse, this);
 
