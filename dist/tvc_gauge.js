@@ -6560,18 +6560,18 @@ var gauge_vis = {
         this.gaugeConfig = Object.assign(defaults, config);
         // Insert a <style> tag with some styles we'll use later.
         element.innerHTML = "\n    <style>\n\t\t* {\n\t\t\t\tfont-family: \"Open Sans\",Helvetica,Arial,sans-serif;\n    \t\tfont-weight: 400;\n    \t\tfont-size: 14px;\n\t\t}\n\n    .hello-world-text-large {\n        font-family: Monserrat,\"Open Sans\",Helvetica,Arial,sans-serif;\n        font-size: 32px;/*72px;*/\n\t\t\t\tposition:absolute;\n\t\t\t\twidth:95%;\n\t\t\t\ttext-align:center;\n    }\n    .hello-world-text-small {\n        font-size: 18px;\n\t\t\t\tposition:absolute;\n\t\t\t\twidth:95%;\n\t\t\t\ttext-align:center;\n    }\n    .hello-world-vis {\n        // Vertical centering\n        height: 100%;\n        display: flex;\n        flex-direction: column;\n        justify-content: center;\n        text-align: center;\n\t\t\t\tposition:relative\n    }\n\t\t.chart-details {\n        position: absolute;\n        top: 50%;\n        left: 50%;\n        transform: translate(-50%, -50%);\n    }\n\n\t\t.chart-details h1.value-label {\n\t\t\t\tline-height: 1;\n\t\t\t\tfont-family: Montserrat,Helvetica,Arial,sans-serif;\n\t\t    font-weight: 400;\n    \t\tfont-size: 32px;\n\t\t    text-transform: uppercase;\n\t\t}\n\n\t\t.chart-details span.value-breakdown {\n\t\t\t\talign-items: center;\n\t\t\t\tfont-size: 12px;\n\t\t}\n\n    </style>";
-        debugger;
         // Create a container element to let us center the text.
-        var container = element.appendChild(document.createElement('div'));
-        container.className = 'hello-world-vis';
-        container.setAttribute('automationId', this.gaugeConfig.automationId);
+        this.container = element.appendChild(document.createElement('div'));
+        this.container.className = 'hello-world-vis';
         // Create an element to contain the text.
-        this.chartElement = container.appendChild(document.createElement('div'));
-        this.textElement = container.appendChild(document.createElement('div'));
+        this.chartElement = this.container.appendChild(document.createElement('div'));
+        this.textElement = this.container.appendChild(document.createElement('div'));
     },
     // Render in response to the data or settings changing
     update: function (data, element, config, queryResponse, details) {
         this.gaugeConfig = Object.assign(defaults, config);
+        debugger;
+        this.container.setAttribute('automationId', this.gaugeConfig.automationId);
         // Clear any errors from previous updates.
         // @ts-ignore
         this.clearErrors();

@@ -13,6 +13,7 @@ import { Looker, VisualizationDefinition } from '../../common/types';
 
 interface GaugeVisualization extends VisualizationDefinition {
   svg?: any;
+  container?: any;
   chartElement?: any;
   textElement?: any;
 
@@ -269,22 +270,23 @@ const vis: GaugeVisualization = {
 
     </style>`;
 
-    debugger;
-
     // Create a container element to let us center the text.
-    const container = element.appendChild(document.createElement('div'));
-    container.className = 'hello-world-vis';
-    container.setAttribute('automationId', this.gaugeConfig.automationId);
+    this.container = element.appendChild(document.createElement('div'));
+    this.container.className = 'hello-world-vis';
 
     // Create an element to contain the text.
-    this.chartElement = container.appendChild(document.createElement('div'));
-    this.textElement = container.appendChild(document.createElement('div'));
+    this.chartElement = this.container.appendChild(document.createElement('div'));
+    this.textElement = this.container.appendChild(document.createElement('div'));
 
   },
   // Render in response to the data or settings changing
   update(data, element, config, queryResponse, details) {
 
     this.gaugeConfig = Object.assign(defaults, config);
+
+    debugger;
+
+    this.container.setAttribute('automationId', this.gaugeConfig.automationId);
 
     // Clear any errors from previous updates.
     // @ts-ignore
