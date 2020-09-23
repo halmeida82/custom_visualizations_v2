@@ -6570,7 +6570,6 @@ var gauge_vis = {
     // Render in response to the data or settings changing
     update: function (data, element, config, queryResponse, details) {
         this.gaugeConfig = Object.assign(defaults, config);
-        debugger;
         this.container.setAttribute('automationId', this.gaugeConfig.automationId);
         // Clear any errors from previous updates.
         // @ts-ignore

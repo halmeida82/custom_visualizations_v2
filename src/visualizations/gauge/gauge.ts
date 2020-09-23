@@ -284,8 +284,6 @@ const vis: GaugeVisualization = {
 
     this.gaugeConfig = Object.assign(defaults, config);
 
-    debugger;
-
     this.container.setAttribute('automationId', this.gaugeConfig.automationId);
 
     // Clear any errors from previous updates.
