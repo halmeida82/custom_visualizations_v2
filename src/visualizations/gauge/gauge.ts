@@ -49,23 +49,12 @@ const vis: IGaugeVisualization = {
         }
         
         if (this.textElement) {
-            if (config.font_size === 'small') {
-                this.textElement.className = 'text-small chart-details';
-            } else {
-                this.textElement.className = 'text-large chart-details';
-            }
-        }
-
-        if (this.textElement) {
             updateTextElement(data, queryResponse, this.textElement, this.config);
         }
 
         if (this.chartElement) {
             updateChartElement(data, queryResponse, this.chartElement, this.config);
         }
-
-        // Always call done to indicate a visualization has finished rendering.
-        // done();
     }
 };
 

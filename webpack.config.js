@@ -1,6 +1,6 @@
 var path = require("path");
 
-//const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
 var webpackConfig = {
   mode: "production",
@@ -16,10 +16,9 @@ var webpackConfig = {
   resolve: {
     extensions: [".ts", ".js"],
   },
-  //plugins: [new UglifyJSPlugin()],
+  plugins: [new UglifyJSPlugin()],
   module: {
     rules: [
-      //{ test: /\.js$/, loader: "babel-loader" },
       { test: /\.ts$/, loader: "ts-loader" },
       { test: /\.css$/, loader: ["to-string-loader", "css-loader"] },
     ],
