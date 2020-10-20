@@ -20108,13 +20108,14 @@ var vis = {
         if (!handleErrors(this, queryResponse, { min_measures: 2, max_measures: 2 })) {
             return;
         }
-        /*if (this.textElement) {
+        if (this.textElement) {
             if (config.font_size === 'small') {
                 this.textElement.className = 'text-small chart-details';
-            } else {
+            }
+            else {
                 this.textElement.className = 'text-large chart-details';
             }
-        }*/
+        }
         if (this.textElement) {
             updateTextElement(data, queryResponse, this.textElement, this.config);
         }
@@ -20229,22 +20230,8 @@ function updateChartValue(value, animate, chartAttributes, gaugeArc) {
 }
 function updateTextElement(data, queryResponse, textElement, config) {
     var gaugeValues = getGaugeValues(data, queryResponse);
-    textElement.innerHTML = "\n        <h1 class=\"value-label\" style=\"color:" + config.textColor + "\">\n        " + gaugeValues.percentage + "%\n        </h1>\n        <span class=\"value-breakdown\" style=\"color:" + config.textColor + "\">\n        " + gaugeValues.nominator + " / " + gaugeValues.denominator + "\n        </span>\n    ";
+    textElement.innerHTML = "\n        <h1 class=\"value-label\" style=\"color:" + config.textColor + "\">\n        " + gaugeValues.percentage.toFixed(1) + "%\n        </h1>\n        <span class=\"value-breakdown\" style=\"color:" + config.textColor + "\">\n        " + gaugeValues.nominator + " / " + gaugeValues.denominator + "\n        </span>\n    ";
 }
-/*function handleErrors(queryResponse: IQueryResponse, addError: Function|undefined): boolean {
-    if (queryResponse.fields.measures.length < 2) {
-        if (addError) {
-            addError({
-                title: 'Not enough measures',
-                message: 'This chart requires 2 measures.'
-            });
-        }
-
-        return true;
-    }
-    
-    return false;
-}*/
 function getGaugeValues(data, queryResponse) {
     var firstRow = data[0];
     var gaugeValues = {

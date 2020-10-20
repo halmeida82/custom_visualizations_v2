@@ -48,13 +48,13 @@ const vis: IGaugeVisualization = {
             return;
         }
         
-        /*if (this.textElement) {
+        if (this.textElement) {
             if (config.font_size === 'small') {
                 this.textElement.className = 'text-small chart-details';
             } else {
                 this.textElement.className = 'text-large chart-details';
             }
-        }*/
+        }
 
         if (this.textElement) {
             updateTextElement(data, queryResponse, this.textElement, this.config);
@@ -201,28 +201,13 @@ function updateTextElement(data:IData, queryResponse:IQueryResponse, textElement
         
     textElement.innerHTML = `
         <h1 class="value-label" style="color:${config.textColor}">
-        ${gaugeValues.percentage}%
+        ${gaugeValues.percentage.toFixed(1)}%
         </h1>
         <span class="value-breakdown" style="color:${config.textColor}">
         ${gaugeValues.nominator} / ${gaugeValues.denominator}
         </span>
     `;
 }
-
-/*function handleErrors(queryResponse: IQueryResponse, addError: Function|undefined): boolean {
-    if (queryResponse.fields.measures.length < 2) {
-        if (addError) {
-            addError({
-                title: 'Not enough measures',
-                message: 'This chart requires 2 measures.'
-            });
-        }
-
-        return true;
-    }
-    
-    return false;
-}*/
 
 function getGaugeValues(data:IData, queryResponse:IQueryResponse): IGaugeValues {
     
