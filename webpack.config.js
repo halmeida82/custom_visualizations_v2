@@ -5,7 +5,6 @@ var path = require("path");
 var webpackConfig = {
   mode: "production",
   entry: {
-    v1_common: "./src/common/common-entry.js",
     tvc_gauge: "./src/visualizations/gauge/gauge.ts",
   },
   output: {
@@ -20,7 +19,7 @@ var webpackConfig = {
   //plugins: [new UglifyJSPlugin()],
   module: {
     rules: [
-      { test: /\.js$/, loader: "babel-loader" },
+      //{ test: /\.js$/, loader: "babel-loader" },
       { test: /\.ts$/, loader: "ts-loader" },
       { test: /\.css$/, loader: ["to-string-loader", "css-loader"] },
     ],

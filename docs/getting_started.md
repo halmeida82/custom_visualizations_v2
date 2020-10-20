@@ -1,4 +1,3 @@
-
 The Looker Visualization API is a pure-JavaScript API that runs in a [sandboxed iframe](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox) and is hosted within the Looker application.
 
 The same visualization code can provide a visualization anywhere in Looker: Explores, Looks, dashboards, embeds, or in PDF or rendered images.
@@ -7,8 +6,8 @@ Each visualization represents a view of a single Looker query. Looker handles ru
 
 ### Requirements
 
-- Some knowledge of JavaScript and web development is necessary. 
-- Looker Admin access is required to create and update manifests, but otherwise is not required.
+-   Some knowledge of JavaScript and web development is necessary.
+-   Looker Admin access is required to create and update manifests, but otherwise is not required.
 
 ## Hello World
 
@@ -16,9 +15,7 @@ Let's walk thorough creating a simple visualization script.
 
 > For more details on each parameter consult the [Visualization API Reference](api_reference.md).
 
-We'll create a simple "Hello World" visualization that displays the first dimension of a given query. The final result should look like this:
-
-![](../src/examples/hello_world/hello_world.png)
+We'll create a simple "Hello World" visualization that displays the first dimension of a given query.
 
 ### Setup
 
@@ -45,13 +42,9 @@ Here's the skeleton of our visualization with all the required properties filled
 
 ```js
 looker.plugins.visualizations.add({
-  create: function(element, config) {
-
-  },
-  updateAsync: function(data, element, config, queryResponse, details, done) {
-
-  }
-})
+    create: function(element, config) {},
+    updateAsync: function(data, element, config, queryResponse, details, done) {}
+});
 ```
 
 This is a perfectly valid Looker visualization, but it's not very visual yet. It'll just look like a blank box. But hey, it's a start.
@@ -66,10 +59,10 @@ The `create` function gives us the opportunity to do the initial setup of our el
 
 ```html
 <style>
-  // some styles for our chart
+    // some styles for our chart
 </style>
 <div class="hello-world-vis">
-  <div>Data Goes Here</div>
+    <div>Data Goes Here</div>
 </div>
 ```
 
@@ -210,16 +203,18 @@ updateAsync: function(data, element, config, queryResponse, details, done) {
 That `config` object looks something like this:
 
 ```js
-{font_size: "large"}
+{
+    font_size: 'large';
+}
 ```
 
 So when we're updating the chart we can easily check that and do stuff in response to it. Here's a check we can add to the end of the update method to implement the font size changes:
 
 ```js
-if (config.font_size == "small") {
-  this._textElement.className = "hello-world-text-small";
+if (config.font_size == 'small') {
+    this._textElement.className = 'hello-world-text-small';
 } else {
-  this._textElement.className = "hello-world-text-large";
+    this._textElement.className = 'hello-world-text-large';
 }
 ```
 
@@ -227,10 +222,10 @@ We should also update the `<style>` tag we added in the `create` method to defin
 
 ```css
 .hello-world-text-large {
-  font-size: 72px;
+    font-size: 72px;
 }
 .hello-world-text-small {
-  font-size: 18px;
+    font-size: 18px;
 }
 ```
 

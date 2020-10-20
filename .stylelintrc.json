@@ -1,0 +1,31 @@
+{
+    "plugins": ["stylelint-scss"],
+    "extends": ["stylelint-config-prettier"],
+    "rules": {
+        "scss/double-slash-comment-whitespace-inside": "always",
+        "scss/operator-no-newline-before": true,
+        "scss/operator-no-newline-after": true,
+        "scss/operator-no-unspaced": true,
+        "scss/selector-no-redundant-nesting-selector": true,
+        "scss/declaration-nested-properties-no-divided-groups": true,
+        "color-named": "never",
+        "color-no-invalid-hex": true,
+        "function-url-quotes": "always",
+        "string-no-newline": true,
+        "length-zero-no-unit": true,
+        "value-keyword-case": "lower",
+        "property-no-unknown": true,
+        "declaration-block-no-duplicate-properties": [
+            true,
+            {
+                "ignore": ["consecutive-duplicates"]
+            }
+        ],
+        "block-no-empty": true,
+        "selector-type-case": "lower",
+        "no-invalid-double-slash-comments": true,
+        "no-unknown-animations": true,
+        "font-family-name-quotes": "always-unless-keyword",
+        "font-family-no-duplicate-names": true
+    }
+}

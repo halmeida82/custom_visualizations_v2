@@ -1,333 +1,240 @@
-// Global values provided via the API
-declare var looker: Looker;
+/*
+ * Copyright (c) 2018 Sensormatic Electronics, LLC. All rights reserved.
+ * Reproduction is forbidden without written approval of Sensormatic Electronics, LLC.
+ */
 
-// import * as d3 from 'd3';
 import { range } from 'd3-array';
 import { rgb } from 'd3-color';
 import { easeExpOut } from 'd3-ease';
 import { interpolate } from 'd3-interpolate';
-import { BaseType, select, Selection } from 'd3-selection';
-import { arc, Arc, DefaultArcObject } from 'd3-shape';
+import { select } from 'd3-selection';
+import { arc } from 'd3-shape';
 import 'd3-transition';
-import { Looker, VisualizationDefinition } from '../../common/types';
+import { IConfiguration, IData, ILooker, IQueryResponse, IUpdateDetails } from '../../core/models';
+import { COMMON_STYLE } from '../../core/styles';
+import { handleErrors } from '../../core/utils';
+import { GAUGE_DEFAULT_OPTION_VALUES, GAUGE_VIS_OPTIONS, IGaugeValues, IGaugeVisualization } from './gauge.models';
+import { GAUGE_STYLE } from './gauge.styles';
 
-interface GaugeVisualization extends VisualizationDefinition {
-  svg?: any;
-  container?: any;
-  chartElement?: any;
-  textElement?: any;
+declare var looker: ILooker;
 
-  gaugeConfig?: any;
-  elementOptions?: any;
-  chart?: Selection<BaseType, {}, HTMLElement, any>;
-  gaugeArc?: Arc<any, DefaultArcObject>;
-  clipPath?: any;
-  gradientId?: string;
-  gradientGroup?: Selection<BaseType, {}, HTMLElement, any>;
-}
+const vis: IGaugeVisualization = {
+    id: 'tvc_gauge',
+    label: 'Gauge',
+    options: GAUGE_VIS_OPTIONS,
+    config: {},
+    create(element:HTMLElement, config:IConfiguration) {
+        this.config = Object.assign(GAUGE_DEFAULT_OPTION_VALUES, config);
 
-// @ts-ignore
-const defaults: any = {
-  circleGap: 60,
-  height: 175,
-  transitionDuration: 1000,
-  circleThickness: 10,
-  baseColor: '#00b7a8',
-  textColor: '#000000',
-  automationId: 'tvc-gauge'
+        addStyles(element);
+        
+        this.container = element.appendChild(document.createElement('div'));
+        this.container.className = 'vertical-central';
+        this.container.setAttribute('automationId', this.config.automationId);
+
+        this.chartElement = this.container.appendChild(document.createElement('div'));
+        
+        this.textElement = this.container.appendChild(document.createElement('div'));
+        this.textElement.className = 'text-large chart-details';
+    },
+    update(data:IData, element:HTMLElement, config:IConfiguration, queryResponse:IQueryResponse, details:IUpdateDetails|undefined) {
+        this.config = Object.assign(GAUGE_DEFAULT_OPTION_VALUES, config);
+        
+        if (this.clearErrors) {
+            this.clearErrors();
+        }
+
+        if (!handleErrors(this,queryResponse,{min_measures:2,max_measures:2})) {
+            return;
+        }
+        
+        /*if (this.textElement) {
+            if (config.font_size === 'small') {
+                this.textElement.className = 'text-small chart-details';
+            } else {
+                this.textElement.className = 'text-large chart-details';
+            }
+        }*/
+
+        if (this.textElement) {
+            updateTextElement(data, queryResponse, this.textElement, this.config);
+        }
+
+        if (this.chartElement) {
+            updateChartElement(data, queryResponse, this.chartElement, this.config);
+        }
+
+        // Always call done to indicate a visualization has finished rendering.
+        // done();
+    }
 };
 
-function deg2rad(deg: number) {
-  return (deg * Math.PI) / 180;
+function addStyles(element:HTMLElement) { 
+    element.innerHTML += `${COMMON_STYLE}
+                          ${GAUGE_STYLE}`;
 }
 
-function getChartOptions(element: any, vis: any) {
-  const circleRad = Math.PI * 2;
-  const perimeter = deg2rad(360 - vis.gaugeConfig.circleGap);
-  const lateralOffset = (circleRad - perimeter) / 2;
-  const angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
-  const radius = { inner: defaults.height / 2 - vis.gaugeConfig.circleThickness, outer: defaults.height / 2 };
-  const width = element.offsetWidth;
-  const height = defaults.height;
-  const duration = vis.gaugeConfig.transitionDuration;
-  const baseColor = vis.gaugeConfig.baseColor;
+function deg2rad(deg: number) {
+    return (deg * Math.PI) / 180;
+}
 
-  return { width, height, duration, perimeter, radius, angles, baseColor };
+function getChartAttributes(element: HTMLDivElement, config:IConfiguration) {
+    const circleRad = Math.PI * 2;
+    const perimeter = deg2rad(360 - config.circleGap);
+    const lateralOffset = (circleRad - perimeter) / 2;
+    const angles = { start: -circleRad / 2 + lateralOffset, end: circleRad / 2 - lateralOffset };
+    const radius = { inner: GAUGE_DEFAULT_OPTION_VALUES.height / 2 - config.circleThickness, outer: GAUGE_DEFAULT_OPTION_VALUES.height / 2 };
+    const width = element.offsetWidth;
+    const height = GAUGE_DEFAULT_OPTION_VALUES.height;
+    const duration = config.transitionDuration;
+    const baseColor = config.baseColor;
+
+    return { width, height, duration, perimeter, radius, angles, baseColor };
 }
 
 function value2chart(value: number, perimeter: number) {
-  return (value * perimeter) / 100 - perimeter / 2;
+    return (value * perimeter) / 100 - perimeter / 2;
 }
 
-function buildChart(element: any, data: any, queryResponse: any, vis: any) {
-
-  // Grab the first cell of the data.
-  const firstRow = data[0];
-  const nominator = firstRow[queryResponse.fields.measures[0].name].value;
-  const denominator = firstRow[queryResponse.fields.measures[1].name].value;
-  const percentage = denominator === 0 ? 0 : (nominator / denominator) * 100;
-
-  const opts = vis.elementOptions = getChartOptions(element, vis);
-
-  const colorDarker = rgb(opts.baseColor).darker(0.5);
-  const colorBrighter = rgb(opts.baseColor).brighter(0.5);
-  const chartContainer = select(element);
-
-  // Clear HTML content of the chart container's DOM element
-  chartContainer.html(null);
-
-  // Set up the chart SVG element and an SVG group, centered in the view box
-  vis.chart = chartContainer
-    .append('svg')
-    .attr('width', opts.width)
-    .attr('height', opts.height)
-    .append('g')
-    .attr('transform', `translate(${opts.width / 2}, ${opts.height / 2})`);
-
-  // Generate arc
-  vis.gaugeArc = arc()
-    .innerRadius(opts.radius.inner)
-    .outerRadius(opts.radius.outer)
-    .startAngle(opts.angles.start)
-    .cornerRadius((opts.radius.outer - opts.radius.inner) / 2);
-
-  // Generate gray background
-  vis.chart
-    .append('path')
-    .datum({ endAngle: opts.angles.end })
-    .style('fill', '#ddd')
-    .attr('d', vis.gaugeArc);
-
-  // Generate arc for the gradient
-  const gradientArc = arc()
-  .innerRadius(opts.radius.inner)
-  .outerRadius(opts.radius.outer);
-
-  // Generate data to create the slices for the gradient arc
-  const datum = range(200).map(i => {
-    return {
-      startAngle: value2chart(i / 2, opts.perimeter),
-      endAngle: value2chart(i / 2 + 1, opts.perimeter),
-      percentage: i / 2 + 1
-    };
-  });
-
-  vis.gradientId = 'foreground-clip-1';
-
-  // Create group for the gradient using the clipPath element as clipping path
-  vis.gradientGroup = vis.chart.append('g').attr('clip-path', `url(${window.location}#${vis.gradientId})`);
-
-  // Map colors to the gradient slices from the darker to the brighter color variants
-  vis.gradientGroup
-    .selectAll('.piece')
-    .data(datum)
-    .enter()
-    .append('path')
-    .attr('class', 'piece')
-    .attr('d', gradientArc)
-    .style('fill', (d: any) => {
-      const red = colorDarker.r + (d.percentage / 100) * (colorBrighter.r - colorDarker.r);
-      const green = colorDarker.g + (d.percentage / 100) * (colorBrighter.g - colorDarker.g);
-      const blue = colorDarker.b + (d.percentage / 100) * (colorBrighter.b - colorDarker.b);
-
-      return rgb(red, green, blue).toString();
-    });
-
-  // Create clipping path to clip the gradient slices
-  vis.clipPath = vis.chart
-    .append('defs')
-    .append('clipPath')
-    .attr('id', vis.gradientId)
-    .append('path')
-    .datum({ endAngle: value2chart(0, opts.perimeter) })
-    .attr('d', vis.gaugeArc);
-
-  // Animate the chart to the actual provided value
-  updateValue(percentage, true, vis);
-}
-
-function updateValue(value: number, animate: boolean, vis: any) {
-  vis.clipPath
-    .transition()
-    .ease(easeExpOut)
-    .duration(animate ? vis.elementOptions.duration : 0)
-    .attrTween('d', (d: any) => {
-      const newAngle = value2chart(value, vis.elementOptions.perimeter);
-      const interpolatedValue = interpolate(d.endAngle, newAngle);
-
-      return (t: any) => {
-        d.endAngle = interpolatedValue(t);
-
-        return vis.gaugeArc(d);
-      };
-    });
-}
-
-const vis: GaugeVisualization = {
-  id: 'gauge', // id/label not required, but nice for testing and keeping manifests in sync
-  label: 'Gauge',
-  options: {
-    transitionDuration: {
-      label: 'Transition duration (miliseconds)',
-      min: 0,
-      default: defaults.transitionDuration,
-      section: 'Config',
-      type: 'number',
-      placeholder: 'Delay in miliseconds'
-    },
-    circleThickness: {
-      label: 'Circle thickness (1-20)',
-      min: 1,
-      max: 20,
-      default: defaults.circleThickness,
-      section: 'Config',
-      type: 'number'
-    },
-    circleGap: {
-      label: 'Circle gap in degrees (0-180)',
-      min: 0,
-      max: 180,
-      default: defaults.circleGap,
-      section: 'Config',
-      type: 'number'
-    },
-    automationId: {
-      label: 'Automation ID (For automated testing)',
-      default: 'tvc_gauge',
-      section: 'Config',
-      type: 'string'
-    },
-    baseColor: {
-      label: 'Base color',
-      default: defaults.baseColor,
-      section: 'Style',
-      type: 'string',
-      display: 'color'
-    },
-    textColor: {
-      label: 'Text color',
-      default: defaults.textColor,
-      section: 'Style',
-      type: 'string',
-      display: 'color'
-    }
-  },
-  // Set up the initial state of the visualization
-  create(element, config) {
-
-    this.gaugeConfig = Object.assign(defaults, config);
-
-    // Insert a <style> tag with some styles we'll use later.
-    element.innerHTML = `
-    <style>
-		* {
-				font-family: "Open Sans",Helvetica,Arial,sans-serif;
-    		font-weight: 400;
-    		font-size: 14px;
-		}
-
-    .hello-world-text-large {
-        font-family: Monserrat,"Open Sans",Helvetica,Arial,sans-serif;
-        font-size: 32px;/*72px;*/
-				position:absolute;
-				width:95%;
-				text-align:center;
-    }
-    .hello-world-text-small {
-        font-size: 18px;
-				position:absolute;
-				width:95%;
-				text-align:center;
-    }
-    .hello-world-vis {
-        // Vertical centering
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-				position:relative
-    }
-		.chart-details {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-		.chart-details h1.value-label {
-				line-height: 1;
-				font-family: Montserrat,Helvetica,Arial,sans-serif;
-		    font-weight: 400;
-    		font-size: 32px;
-		    text-transform: uppercase;
-		}
-
-		.chart-details span.value-breakdown {
-				align-items: center;
-				font-size: 12px;
-		}
-
-    </style>`;
-
-    // Create a container element to let us center the text.
-    this.container = element.appendChild(document.createElement('div'));
-    this.container.className = 'hello-world-vis';
-
-    // Create an element to contain the text.
-    this.chartElement = this.container.appendChild(document.createElement('div'));
-    this.textElement = this.container.appendChild(document.createElement('div'));
-
-  },
-  // Render in response to the data or settings changing
-  update(data, element, config, queryResponse, details) {
-
-    this.gaugeConfig = Object.assign(defaults, config);
-
-    this.container.setAttribute('automationId', this.gaugeConfig.automationId);
-
-    // Clear any errors from previous updates.
-    // @ts-ignore
-    this.clearErrors();
-
-    // Throw some errors and exit if the shape of the data isn't what this chart needs.
-    if (queryResponse.fields.measures.length < 2) {
-      // @ts-ignore
-      this.addError({
-        title: 'Not enough measures',
-        message: 'This chart requires 2 measures.'
-      });
-      return;
-    }
-
-    if (config.font_size === 'small') {
-      this.textElement.className = 'hello-world-text-small chart-details';
-    } else {
-      this.textElement.className = 'hello-world-text-large chart-details';
-    }
-
+function updateChartElement(data: IData, queryResponse: IQueryResponse, chartElement:HTMLDivElement, config:IConfiguration) {
     // Grab the first cell of the data.
-    const firstRow = data[0];
-    const nominator = firstRow[queryResponse.fields.measures[0].name].value;
-    const denominator = firstRow[queryResponse.fields.measures[1].name].value;
-    const percentage = denominator === 0 ? (0).toFixed(1) : ((nominator / denominator) * 100).toFixed(1);
+    const gaugeValues = getGaugeValues(data, queryResponse);
 
-    // Insert the data into the page.
-    this.textElement.innerHTML = `
-			<h1 class="value-label" style="color:${this.gaugeConfig.textColor}">
-      ${percentage}%
-      </h1>
-      <span class="value-breakdown" style="color:${this.gaugeConfig.textColor}">
-      ${nominator} / ${denominator}
-      </span>
+    const chartAttributes = getChartAttributes(chartElement, config);
+
+    const colorDarker = rgb(chartAttributes.baseColor).darker(0.5);
+    const colorBrighter = rgb(chartAttributes.baseColor).brighter(0.5);
+    const chartContainer = select(chartElement);
+
+    // Clear HTML content of the chart container's DOM element
+    chartContainer.html(null);
+
+    // Set up the chart SVG element and an SVG group, centered in the view box
+    const chart = chartContainer
+        .append('svg')
+        .attr('width', chartAttributes.width)
+        .attr('height', chartAttributes.height)
+        .append('g')
+        .attr('transform', `translate(${chartAttributes.width / 2}, ${chartAttributes.height / 2})`);
+
+    // Generate arc
+    const gaugeArc:any = arc()
+        .innerRadius(chartAttributes.radius.inner)
+        .outerRadius(chartAttributes.radius.outer)
+        .startAngle(chartAttributes.angles.start)
+        .cornerRadius((chartAttributes.radius.outer - chartAttributes.radius.inner) / 2);
+
+    // Generate gray background
+    chart.append('path')
+        .datum({ endAngle: chartAttributes.angles.end })
+        .style('fill', '#ddd')
+        .attr('d', gaugeArc);
+
+    // Generate arc for the gradient
+    const gradientArc:any = arc()
+        .innerRadius(chartAttributes.radius.inner)
+        .outerRadius(chartAttributes.radius.outer);
+
+    // Generate data to create the slices for the gradient arc
+    const datum = range(200).map(i => {
+        return {
+            startAngle: value2chart(i / 2, chartAttributes.perimeter),
+            endAngle: value2chart(i / 2 + 1, chartAttributes.perimeter),
+            percentage: i / 2 + 1
+        };
+    });
+
+    const gradientId = 'foreground-clip-1';
+
+    // Create group for the gradient using the clipPath element as clipping path
+    const gradientGroup = chart.append('g').attr('clip-path', `url(${window.location}#${gradientId})`);
+
+    // Map colors to the gradient slices from the darker to the brighter color variants
+    gradientGroup
+        .selectAll('.piece')
+        .data(datum)
+        .enter()
+        .append('path')
+        .attr('class', 'piece')
+        .attr('d', gradientArc)
+        .style('fill', (d: any) => {
+            const red = colorDarker.r + (d.percentage / 100) * (colorBrighter.r - colorDarker.r);
+            const green = colorDarker.g + (d.percentage / 100) * (colorBrighter.g - colorDarker.g);
+            const blue = colorDarker.b + (d.percentage / 100) * (colorBrighter.b - colorDarker.b);
+
+            return rgb(red, green, blue).toString();
+        });
+
+    // Create clipping path to clip the gradient slices
+    vis.clipPath = chart
+        .append('defs')
+        .append('clipPath')
+        .attr('id', gradientId)
+        .append('path')
+        .datum({ endAngle: value2chart(0, chartAttributes.perimeter) })
+        .attr('d', gaugeArc);
+
+    // Animate the chart to the actual provided value
+    updateChartValue(gaugeValues.percentage, true, chartAttributes, gaugeArc);
+}
+
+function updateChartValue(value: number, animate: boolean, chartAttributes: any, gaugeArc:any) {
+    vis.clipPath
+        .transition()
+        .ease(easeExpOut)
+        .duration(animate ? chartAttributes.duration : 0)
+        .attrTween('d', (d: any) => {
+            const newAngle = value2chart(value, chartAttributes.perimeter);
+            const interpolatedValue = interpolate(d.endAngle, newAngle);
+
+            return (t: any) => {
+                d.endAngle = interpolatedValue(t);
+
+                return gaugeArc(d);
+            };
+        });
+}
+
+function updateTextElement(data:IData, queryResponse:IQueryResponse, textElement:HTMLDivElement, config:IConfiguration) {
+    
+    const gaugeValues = getGaugeValues(data, queryResponse);
+        
+    textElement.innerHTML = `
+        <h1 class="value-label" style="color:${config.textColor}">
+        ${gaugeValues.percentage}%
+        </h1>
+        <span class="value-breakdown" style="color:${config.textColor}">
+        ${gaugeValues.nominator} / ${gaugeValues.denominator}
+        </span>
     `;
+}
 
-    buildChart(this.chartElement,data,queryResponse, this);
+/*function handleErrors(queryResponse: IQueryResponse, addError: Function|undefined): boolean {
+    if (queryResponse.fields.measures.length < 2) {
+        if (addError) {
+            addError({
+                title: 'Not enough measures',
+                message: 'This chart requires 2 measures.'
+            });
+        }
 
-    // Always call done to indicate a visualization has finished rendering.
-    // done();
+        return true;
+    }
+    
+    return false;
+}*/
 
-  }
-};
+function getGaugeValues(data:IData, queryResponse:IQueryResponse): IGaugeValues {
+    
+    const firstRow = data[0];
+
+    const gaugeValues: IGaugeValues = {
+        nominator: firstRow[queryResponse.fields.measures[0].name].value,
+        denominator: firstRow[queryResponse.fields.measures[1].name].value,
+        percentage: firstRow[queryResponse.fields.measures[1].name].value === 0 ? 0 : (firstRow[queryResponse.fields.measures[0].name].value / firstRow[queryResponse.fields.measures[1].name].value) * 100
+    }
+
+    return gaugeValues;
+}
 
 looker.plugins.visualizations.add(vis);

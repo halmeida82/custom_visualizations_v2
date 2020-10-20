@@ -1,29 +1,76 @@
 {
-  "defaultSeverity": "error",
-  "extends": [
-    "tslint-config-standard"
-  ],
-  "jsRules": {},
+  "rulesDirectory": ["node_modules/codelyzer", "rxjs-tslint", "./lint-rules/dist"],
+  "extends": ["tslint-config-prettier"],
   "rules": {
-    "no-namespace": [
-      true,
-      "allow-declarations"
-    ],
-    "prefer-const": [
-      true,
-      {
-        "destructuring": "all"
-      }
-    ],
-    "no-reference": true,
-    "promise-function-async": true,
-    "await-promise": true,
-    "no-inferred-empty-object-type": true,
-    "space-before-function-paren": false,
-    "strict-type-predicates": true,
-    "return-undefined": true,
-    "semicolon": [true, "always"]
-  },
-  "rulesDirectory": []
-  
+      "file-header": [
+          true,
+          "Copyright \\(c\\) 2018 Sensormatic Electronics, LLC. All rights reserved.[\r\n]+ \\* Reproduction is forbidden without written approval of Sensormatic Electronics, LLC."
+      ],
+      "ban": [true, "fdescribe", "fit"],
+      "no-access-missing-member": false,
+      "template-no-negated-async": true,
+      "no-attribute-decorator": true,
+      "no-input-rename": true,
+      "no-output-rename": true,
+      "use-lifecycle-interface": true,
+      "use-pipe-decorator": true,
+      "use-pipe-transform-interface": true,
+      "no-host-metadata-property": true,
+      "no-inputs-metadata-property": true,
+      "no-outputs-metadata-property": true,
+      "one-variable-per-declaration": [true],
+      "interface-name": [true, "always-prefix"],
+      "no-switch-case-fall-through": true,
+      "switch-default": true,
+      "newline-before-return": true,
+      "no-consecutive-blank-lines": true,
+      "no-duplicate-variable": true,
+      "no-magic-numbers": false,
+      "arrow-return-shorthand": true,
+      "class-name": true,
+      "import-blacklist": [true, "lodash"],
+      "member-access": false,
+      "member-ordering": [
+          true,
+          {
+              "order": [
+                  "static-field",
+                  "instance-field",
+                  "constructor",
+                  "public-instance-method",
+                  "protected-instance-method",
+                  "private-instance-method"
+              ]
+          }
+      ],
+      "no-arg": true,
+      "no-console": [true, "log", "error", "time"],
+      "no-debugger": true,
+      "no-duplicate-super": true,
+      "no-empty": false,
+      "no-empty-interface": true,
+      "no-eval": true,
+      "no-misused-new": true,
+      "no-non-null-assertion": true,
+      "no-shadowed-variable": true,
+      "no-unnecessary-initializer": true,
+      "no-unused-variable": [
+          true,
+          {
+              "ignore-pattern": "\\w*((Subscription)|(Subscriber)|(subscriber)|(onTouch))"
+          }
+      ],
+      "no-unused-expression": true,
+      "no-var-keyword": true,
+      "prefer-const": true,
+      "radix": true,
+      "triple-equals": [true, "allow-null-check"],
+      "unified-signatures": true,
+      "variable-name": [true, "allow-leading-underscore"],
+      "rxjs-collapse-imports": true,
+      "rxjs-pipeable-operators-only": true,
+      "rxjs-no-static-observable-methods": true,
+      "rxjs-proper-imports": true,
+      "destroy-subscriptions": true
+  }
 }
